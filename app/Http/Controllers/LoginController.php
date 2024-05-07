@@ -3,43 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
-    public function home()
-    {
-        return view('home');
-    }
-    
-    public function login()
-    {
-        return view('login');
-    }
-
-    public function check(Request $request)
-    {
-        $data = DB::table('testtable')->get();
-        if (count($data) == 0) {
-            return back()->withErrors($data)->withInput();
+    public function login(Request $request){
+        if (Auth::check()) {
+            return redirect(route('user.home'));
         }
-            
-        //dd($data);
-        $valid = $request->validate([
-            'email' => 'required|min:4|max:40',
-            'password' => 'required|min:6|max:24'
-        ]);
+        $formFields = $request->only(['email', 'password']);
 
-        if ($valid) {
-            return redirect('/home');
+        if(Auth::attempt($formFields)){
+            return redirect()->intended(route('user.home'));
         } else {
-            return back()->withErrors($valid)->withInput();
+            if ($request->has('password')) {
+                return redirect(route('user.login'))->withErrors([
+                    'password' => 'Пароль неверен, попробуйте еще раз'
+                ]);
+            } else {
+                return redirect(route('user.login'))->withErrors([
+                    'email' => 'Пользователя с заданным email не существует'
+                ]);
+            }
         }
-    }
-
-    public function tables()
-    {
-        return view('tables');
     }
 }
