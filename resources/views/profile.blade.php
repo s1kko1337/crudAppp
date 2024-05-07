@@ -31,11 +31,11 @@
     </div>
     <button type="submit" class="btn btn-primary">Изменить</button>
   </form>
-  <form method="POST" action="{{ route('user.profile.editPassword') }}">
+  <form method="POST" action="{{ route('user.profile.editEmail') }}">
     @csrf
     <div class="form-group my-1">
-      <label for="password">Изменить пароль:</label>
-      <input type="text" class="form-control" id="password" name="password" placeholder="Введите новый пароль">
+    <label for="email">Эл.почта</label>
+    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
     </div>
     <button type="submit" class="btn btn-primary">Изменить</button>
   </form>

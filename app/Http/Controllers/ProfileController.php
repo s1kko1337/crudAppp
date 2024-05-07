@@ -45,20 +45,19 @@ class ProfileController extends Controller
         return redirect()->back()->with('success', 'Имя пользователя успешно обновлено.');
     }
 
-    public function editPassword(Request $request)
+    public function editEmail(Request $request)
     {
-        $request->validate([
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-    
-        $userId = Auth::id(); 
-    
-        DB::table('users')
-            ->where('id', $userId)
-            ->update(['password' => Hash::make($request->password)]);
-    
-        return redirect(route('user.login'))->with('success', 'Пароль пользователя успешно обновлен. Пожалуйста, войдите снова.');
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $userId = Auth::id(); 
+
+    DB::table('users')
+        ->where('id', $userId)
+        ->update(['email' => $request->email]);
+
+        return redirect()->back()->with('success', 'Электронная почта пользователя успешно обновлена.');
     }
-    
 
 }

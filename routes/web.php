@@ -12,7 +12,7 @@
         Route::view('/tables', 'tables')->middleware('auth')->name('tables');
         Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');
         Route::post('/profile/edit-name', [ProfileController::class, 'editName'])->middleware('auth')->name('profile.editName');
-        Route::post('/profile/edit-password', [ ProfileController::class, 'editPassword'])->middleware('auth')->name('profile.editPassword');
+        Route::post('/profile/edit-email', [ ProfileController::class, 'editEmail'])->middleware('auth')->name('profile.editEmail');
 
 
 
