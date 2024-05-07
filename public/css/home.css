@@ -62,3 +62,6 @@ body {
     overflow-y: auto;
   }
   
+  .container-fluid, .row {
+    height: 100%;
+}

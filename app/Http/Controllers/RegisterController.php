@@ -14,6 +14,7 @@ class RegisterController extends Controller
     }
 
     $validateFields = $request->validate([
+        'username' => 'required|min:8',
         'email' => 'required|email',
         'password' => 'required|min:8',
         'roleId' => 'required'

@@ -14,6 +14,11 @@
   @csrf
   <h1 class="h2 mb-3 fw-normal">Регистрация</h1>
 
+  <div class="form-floating my-1">
+    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+    <label for="username">Имя пользователя</label>
+  </div>
+
   <div class="form-floating">
     <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
     <label for="email">Эл.почта</label>

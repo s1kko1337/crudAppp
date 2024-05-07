@@ -12,6 +12,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('username',255)->nullable(false);
             $table->string('email',255)->nullable(false)->unique();
             $table->string('password',255)->nullable(false);
             $table->integer('roleId')->nullable(false);
