@@ -46,13 +46,14 @@
             </ul>
         </div>
         
-        <main class="col-md-9 col-lg-10 vh-100">
+        <main class="col-md-9 col-lg-10 vh-100" style="overflow-y: auto;">
             @yield('content')
         </main>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @yield('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {

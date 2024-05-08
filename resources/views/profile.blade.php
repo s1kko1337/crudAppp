@@ -3,7 +3,7 @@
 @section('content')
 
 <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
-<div class="container mt-5">
+<div class="container mt-5" style="overflow-y: auto;">
   <h2>Управление профилем</h2>
   <table class="table">
     <tr>
