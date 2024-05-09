@@ -131,14 +131,14 @@ public function saveUser(Request $request){
     {
         $user = User::findOrFail($id);
         $user->update($request->all());
-        return redirect()->route('user.home')->with('success', 'Пользователь успешно обновлен');
+        return redirect()->route('user.profile')->with('success', 'Пользователь успешно обновлен');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('user.home')->with('success', 'Пользователь успешно удален');
+        return redirect()->route('user.profile')->with('success', 'Пользователь успешно удален');
     }
 
 }
