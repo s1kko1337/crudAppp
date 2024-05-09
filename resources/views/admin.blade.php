@@ -2,6 +2,7 @@
 
 @section('content')
     @parent 
+    <div class="d-flex align-items-start">
     <main class="container mt-10">
     <hr>
     <div class="row">
@@ -47,34 +48,6 @@
         </div>
     </div>
 </main>
-
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editUserModalLabel">Редактировать пользователя</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Форма для редактирования пользователя -->
-                <form id="editUserForm" action="" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <!-- Поля для редактирования пользователя -->
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Имя пользователя</label>
-                        <input type="text" class="form-control" id="edit-username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Эл. почта</label>
-                        <input type="email" class="form-control" id="edit-email" name="email" required>
-                    </div>
-                    <!-- Другие поля для редактирования, если необходимо -->
-                    <button type="submit" class="btn btn-primary">Обновить</button>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 
 
