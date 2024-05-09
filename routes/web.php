@@ -11,10 +11,20 @@
         Route::view('/home', 'home')->middleware('auth')->name('home');
         Route::view('/tables', 'tables')->middleware('auth')->name('tables');
         Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');
+
         Route::post('/profile/edit-name', [ProfileController::class, 'editName'])->middleware('auth')->name('profile.editName');
         Route::post('/profile/edit-email', [ ProfileController::class, 'editEmail'])->middleware('auth')->name('profile.editEmail');
-        Route::get('/get-updated-users', [ProfileController::class, 'getUpdatedUsers'])->name('admin.get.updated.users');
+        //Route::get('/get-updated-users', [ProfileController::class, 'getUpdatedUsers'])->name('admin.get.updated.users');
 
+        Route::get('/user/add', [ProfileController::class, 'add'])->name('add');
+        Route::post('/user/add', [ ProfileController::class, 'saveUser'])->name('saveUser');
+        
+        Route::middleware('auth')->group(function () {
+            Route::get('/user/edit/{id}', [ProfileController::class, 'edit'])->name('edit');
+            Route::put('/user/update/{id}', [ProfileController::class, 'update'])->name('update');
+            Route::delete('/user/delete/{id}', [ProfileController::class, 'destroy'])->name('delete');
+        });
+        
 
 
         Route::get('/', function(){

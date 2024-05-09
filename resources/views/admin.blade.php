@@ -7,6 +7,9 @@
     <div class="row">
         <div class="col">
             <h2>Список пользователей</h2>
+            <div class="mb-3">
+            <a href="{{ route('user.add') }}" class="btn btn-primary">Добавить</a>
+                </div>
             <table id="users-table" class="table">
                 <thead>
                     <tr>
@@ -29,9 +32,14 @@
                             @endphp
                         </td>
                         <td>
-                            {{-- <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary">Редактировать</a> --}}
-                            <a href="#" class="btn btn-primary">Редактировать</a>
+                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary">Редактировать</a>
+                             <form action="{{ route('user.delete', $user->id) }}" method="POST" style="display:inline">
+                                 @csrf
+                                 @method('DELETE')
+                                 <button type="submit" class="btn btn-danger">Удалить</button>
+                             </form>
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -39,29 +47,99 @@
         </div>
     </div>
 </main>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Редактировать пользователя</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма для редактирования пользователя -->
+                <form id="editUserForm" action="" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <!-- Поля для редактирования пользователя -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Имя пользователя</label>
+                        <input type="text" class="form-control" id="edit-username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Эл. почта</label>
+                        <input type="email" class="form-control" id="edit-email" name="email" required>
+                    </div>
+                    <!-- Другие поля для редактирования, если необходимо -->
+                    <button type="submit" class="btn btn-primary">Обновить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 @yield('script')
 <script>
-    setInterval(function() {
-        $.ajax({
-            url: '{{ route("user.admin.get.updated.users") }}',
-            type: 'GET',
-            success: function(response) {
-                $('#users-table tbody').empty();
-                
-                response.users.forEach(function(user) {
-                    var newRow = '<tr>' +
-                        '<td>' + user.id + '</td>' +
-                        '<td>' + user.username + '</td>' +
-                        '<td>' + user.email + '</td>' +
-                        '<td>' + user.role_name + '</td>' +
-                        '<td>' +
-                        '<a href="#" class="btn btn-primary">Редактировать</a>' +
-                        '</td>' +
-                        '</tr>';
-                    $('#users-table tbody').append(newRow);
-                });
-            }
+
+/*function getUserById(userId) {
+    return $.ajax({
+        url: '/user/edit/' + userId,
+        type: 'GET',
+        success: function(response) {
+            return response.user; 
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+}
+
+    /*$(document).ready(function() {
+        $('.edit-user-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var user = getUserById(userId); // Функция для получения данных пользователя по его ID
+            fillEditUserForm(user);
         });
-    }, 5000);
+
+        function getUserById(userId) {
+            // Ваш код для получения данных пользователя по его ID
+            // Возможно, вам нужно будет использовать AJAX-запрос
+            // Возвращайте объект пользователя с данными
+        }
+
+        function fillEditUserForm(user) {
+            $('#edit-username').val(user.username);
+            $('#edit-email').val(user.email);
+            // Заполните другие поля формы, если необходимо
+            $('#editUserForm').attr('action', '/user/update/' + user.id); // Установите атрибут action формы для отправки данных на сервер
+        }
+    });
+*/
+/*setInterval(function() {
+    $.ajax({
+        url: '{{-- route("user.admin.get.updated.users") --}}',
+        type: 'GET',
+        success: function(response) {
+            $('#users-table tbody').empty();
+            
+            response.users.forEach(function(user) {
+                var roleId = user.role_id; // Получаем ID роли пользователя
+                var roleName = response.userRoles[roleId]; // Получаем название роли по ID из объекта userRoles
+
+                var newRow = '<tr>' +
+                    '<td>' + user.id + '</td>' +
+                    '<td>' + user.username + '</td>' +
+                    '<td>' + user.email + '</td>' +
+                    '<td>' + roleName + '</td>' + // Используем полученное название роли
+                    '<td>' +
+                    '<a href="#" class="btn btn-primary">Редактировать</a>' +
+                    '</td>' +
+                    '</tr>';
+                $('#users-table tbody').append(newRow);
+            });
+        }
+    });
+}, 5000);
+*/
 </script>

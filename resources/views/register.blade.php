@@ -35,7 +35,7 @@
     <option value="2">Мерчендайзер</option>
     </select>
     <label class="form-label bg-transparent border-0" for="role">Роль</label>
-</div>
+  </div>
 
 
   <button class="btn btn-primary w-100 py-2" type="submit">Зарегестрироваться</button>
