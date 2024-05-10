@@ -37,7 +37,7 @@ class MainContentController extends Controller
     
     //TODO
     public function updateTable(Request $request, $tableName, $id) {
-    /*    // Получаем данные текущей строки по id
+        // Получаем данные текущей строки по id
         $currentRow = DB::table($tableName)->where('id', $id)->first();
     
         // Перебираем данные из запроса и обновляем только отличающиеся поля
@@ -51,7 +51,7 @@ class MainContentController extends Controller
             return redirect()->back()->with('success', 'Данные успешно обновлены');
         } else {
             return redirect()->back()->with('info', 'Данные не изменены');
-        }*/
+        }
     }
     
     
