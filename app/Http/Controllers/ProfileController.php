@@ -38,7 +38,6 @@ class ProfileController extends Controller
     }*/
     
     public function getUserRole(User $user){
-
         //$id =  $user['id'];
         //$user = User::find($id,'*')->first();
         $roleId = $user->roleId;

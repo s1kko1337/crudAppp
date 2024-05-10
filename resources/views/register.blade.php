@@ -31,7 +31,7 @@
 
   <div class="form-floating my-2">
   <select class="form-select" id="role" name="roleId">
-    <option value="0">Администратор</option>
+    {{--<option value="0">Администратор</option>--}}
     <option value="1">Главный менеджер</option>
     <option value="2">Мерчендайзер</option>
     </select>
