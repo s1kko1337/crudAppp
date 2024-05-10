@@ -29,26 +29,31 @@ class MainContentController extends Controller
     }
     
 
-    public function destroy($id,$tableName)
+    public function destroy($tableName, $id)
     {
-    
         DB::table($tableName)->where('id', $id)->delete();
-    
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Строка успешно удалена');
     }
     
-
-   // MainContentController.php
-
-public function updateTable(Request $request, $tableName, $id) {
-    $data = $request->only(['column1', 'column2',]);
-
-    // Обновляем данные в базе данных
-    DB::table($tableName)->where('id', $id)->update($data);
-
-    // Перенаправляем пользователя обратно на страницу редактирования таблицы
-    return redirect()->route('user.tables.edit', $tableName)->with('success', 'Данные успешно обновлены');
-}
-
+    //TODO
+    public function updateTable(Request $request, $tableName, $id) {
+    /*    // Получаем данные текущей строки по id
+        $currentRow = DB::table($tableName)->where('id', $id)->first();
+    
+        // Перебираем данные из запроса и обновляем только отличающиеся поля
+        $data = $request->except('_token', '_method');
+        $updatedData = array_diff_assoc($data, (array)$currentRow);
+        return redirect()->back()->with('error', $updatedData);
+    
+        if (!empty($updatedData)) {
+            // Обновляем только отличающиеся поля
+            DB::table($tableName)->where('id', $id)->update($updatedData);
+            return redirect()->back()->with('success', 'Данные успешно обновлены');
+        } else {
+            return redirect()->back()->with('info', 'Данные не изменены');
+        }*/
+    }
+    
+    
     
 }

@@ -1,3 +1,5 @@
+<!-- editTable.blade.php -->
+
 @extends('layout')
 
 @section('content')
@@ -14,23 +16,35 @@
                     @foreach ($columns as $column)
                         <th>{{ $column }}</th> 
                     @endforeach
-                    <th>Действия</th> <!-- Add a new table header for actions -->
+                    <th>Действия</th> 
                 </tr>
             </thead>
             <tbody>
+                <!--            TODO            -->
                 @foreach ($tableData as $row)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        @foreach ($columns as $column)
-                            <td>{{ $row->$column }}</td> 
+                        @foreach ($columns as $index => $column)
+                            @if ($index === 0)
+                                <td>{{ $row->$column }}</td> 
+                            @else
+                                <td>
+                                    <input type="text" name="{{ $column }}" value="{{ $row->$column }}">
+                                </td>
+                            @endif
                         @endforeach
                         <td>
-                            <a href="{{ route('user.tables.edit', ['tableName' => $tableName, 'id' => $row->id]) }}" class="btn btn-primary">Редактировать</a>
-                            <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="display:inline">
+                        <form action="{{ route('user.tables.update', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="display:inline">
                             @csrf
-                            @method('DELETE')
+                            @method('PUT') 
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+
+                        <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="display:inline">
+                            @csrf
+                            @method('DELETE') 
                             <button type="submit" class="btn btn-danger">Удалить</button>
-                            </form>
+                        </form>
                         </td> 
                     </tr>
                 @endforeach      

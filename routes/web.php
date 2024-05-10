@@ -11,7 +11,7 @@
         Route::name('user.')->group(function(){
             Route::get('/tables', [ MainContentController::class, 'showTables'])->middleware('auth')->name('tables');
             Route::get('/tables/{tableName}/edit', [MainContentController::class, 'editTable'])->middleware('auth')->name('tables.edit');
-            Route::post('/tables/{tableName}/update', [MainContentController::class, 'updateTable'])->middleware('auth')->name('tables.update');
+            Route::put('/tables/{tableName}/update/{id}', [MainContentController::class, 'updateTable'])->middleware('auth')->name('tables.update');
             Route::delete('/tables/{tableName}/delete/{id}', [MainContentController::class, 'destroy'])->middleware('auth')->name('tables.delete');
 
             Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');
