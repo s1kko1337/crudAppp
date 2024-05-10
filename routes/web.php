@@ -3,13 +3,14 @@
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\RegisterController;
     use App\Http\Controllers\ProfileController;
+    use App\Http\Controllers\MainContentController;
     use App\Http\Controllers\LoginController;
     use Illuminate\Support\Facades\Auth;
 
 
     Route::name('user.')->group(function(){
-        Route::view('/home', 'home')->middleware('auth')->name('home');
-        Route::view('/tables', 'tables')->middleware('auth')->name('tables');
+        Route::get('/tables', [ MainContentController::class, 'showTables'])->middleware('auth')->name('tables');
+        Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');
         Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');
 
         Route::post('/profile/edit-name', [ProfileController::class, 'editName'])->middleware('auth')->name('profile.editName');

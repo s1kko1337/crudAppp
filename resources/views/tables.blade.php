@@ -17,30 +17,16 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Наименование товара</th>
-                    <th>Общее количество</th>
-                    <th>Количество на складе</th>
-                    <th>Количество в торговом зале</th>
-                    <th>Дата поставки</th>
+                    <th>Наименование таблицы</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach ($tables as $key => $table)
                 <tr>
-                    <td>1</td>
-                    <td>Товар 1</td>
-                    <td>100</td>
-                    <td>50</td>
-                    <td>50</td>
-                    <td>2024-03-01</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Товар 2</td>
-                    <td>150</td>
-                    <td>100</td>
-                    <td>50</td>
-                    <td>2024-03-02</td>
-                </tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $table }}</td>
+                </tr>      
+                @endforeach      
             </tbody>
         </table>
     </div>
