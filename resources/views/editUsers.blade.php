@@ -21,7 +21,8 @@
                 <!--            TODO            -->
                 @foreach ($tableData as $row)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration }}
+                    </td>
                         <form action="{{ route('user.tables.update', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST">
                             @csrf
                             @method('PUT')
@@ -34,11 +35,14 @@
                                 <button type="submit" class="btn btn-primary">Сохранить</button>
                             </td> 
                         </form>
+                        <td>
                         <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="margin-left: 10px;">
                             @csrf
                             @method('DELETE') 
                             <button type="submit" class="btn btn-danger">Удалить</button>
                         </form>
+                        </td>
+                        
                     </tr>
                 @endforeach      
             </tbody>
