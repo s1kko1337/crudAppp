@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 class MainContentController extends Controller
 {
-    public function showTables(){
+   public function showTables(){
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
         return view('tables', ['tables' => $tables]);
     }
@@ -21,18 +21,28 @@ class MainContentController extends Controller
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
-            if($tableName=='users'){
-            $editableColumns = ['username', 'email', 'roleId'];
-            }
+            $editableColumns = [
+                'users' => ['username', 'email', 'roleId'],
+                'roles' => ['id','name'],
+                'premises' => ['id_room','level_room','name_room','adress_room','capacity_room'],
+                'product' => ['id_product','name_product','price_product'],
+                'sales' => ['id_sale', 'id_saler','id_product','sale_date','quantity','total_price'],
+                'sellers' => ['id_saler','name_seller','telephone_saler','total_sells'],
+                'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
+                'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
+                'supply_detail' => ['id_supply','id_product','quantity']
+            ];
+            //if($tableName=='users'){
+            //$editableColumns = ['username', 'email', 'roleId'];
+            //}
             $tableData = DB::table($tableName)->get(); 
-            $viewName = 'edit' . ucfirst($tableName);
-            return view($viewName, ['tableName' => $tableName, 'columns' => $columns, 'tableData' => $tableData, 'editableColumns' => $editableColumns]);
+            //$viewName = 'edit' . ucfirst($tableName);
+            return view('editTable'/*$viewName*/, ['tableName' => $tableName, 'columns' => $columns, 'tableData' => $tableData, 'editableColumns' => $editableColumns[$tableName]]);
         } else {
             abort(404);
         }
     }
     
-
     public function destroy($tableName, $id)
     {
         DB::table($tableName)->where('id', $id)->delete();
@@ -41,56 +51,35 @@ class MainContentController extends Controller
     
     //TODO
     public function updateTable(Request $request, $tableName, $id) {
-        if($tableName == 'users') {
-        
-        $validateFields = $request->validate([
-                'username' => 'required|min:8',
-                'email' => 'required|email',
-                'roleId' => 'required'
-            ]);     
-        DB::table('users')
-            ->where('id', $id)
-            ->update([
-            'email' => $validateFields['email'],
-            'username' => $validateFields['username'],
-            'roleId' => $validateFields['roleId']
-        ]); 
-            return redirect()->route('user.tables.edit', $tableName)->with('success', 'Пользователь успешно обновлен');
-        }
-        if($tableName == 'premises')
-        {
-            
-        } 
-        if($tableName == 'sellers')
-        {
-            
-        } 
-        if($tableName == 'sales')
-        {
-            
-        } 
-        if($tableName == 'product')
-        {
-            
-        } 
-        if($tableName == 'suppliers')
-        {
-            
-        } 
-        if($tableName == 'supplies')
-        {
-            
-        } 
-        if($tableName == 'roles')
-        {
-            
-        } 
-        if($tableName == 'supply_detail')
-        {
-            
-        } 
+        $editableColumns = [
+            'users' => ['email', 'username', 'roleId'],
+            'roles' => ['name'],
+            'premises' => ['id_room', 'level_room', 'name_room', 'adress_room', 'capacity_room'],
+            'product' => ['name_product', 'price_product'],
+            'sales' => ['id_saler', 'id_product', 'sale_date', 'quantity', 'total_price'],
+            'sellers' => ['name_seller', 'telephone_saler', 'total_sells'],
+            'suppliers' => ['name_org', 'name_supplier', 'email_supplier', 'telephone_supplier', 'adress_org'],
+            'supplies' => ['id_supplier', 'supply_date', 'quantity_products', 'total_price'],
+            'supply_detail' => ['id_product', 'quantity']
+        ];
 
+        if (!array_key_exists($tableName, $editableColumns)) {
+            abort(404);
+        }
+    
+        $updateData = [];
+        foreach ($editableColumns[$tableName] as $column) {
+            $updateData[$column] = $request->input($column);
+        }
+    
+        // Обновляем запись в базе данных
+        DB::table($tableName)
+            ->where('id', $id)
+            ->update($updateData);
+    
+        return redirect()->route('user.tables.edit', $tableName)->with('success', 'Данные успешно обновлены');
     }
+    
     
     
     
