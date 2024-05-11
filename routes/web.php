@@ -12,6 +12,10 @@
             Route::get('/tables', [ MainContentController::class, 'showTables'])->middleware('auth')->name('tables');
             Route::get('/tables/{tableName}/edit', [MainContentController::class, 'editTable'])->middleware('auth')->name('tables.edit');
             Route::put('/tables/{tableName}/update/{id}', [MainContentController::class, 'updateTable'])->middleware('auth')->name('tables.update');
+
+            Route::get('/tables/{tableName}/edit/add', [MainContentController::class, 'addTable'])->middleware('auth')->name('tables.add');
+            Route::post('/tables/{tableName}/edit/add', [MainContentController::class, 'addTable'])->middleware('auth')->name('tables.add');
+
             Route::delete('/tables/{tableName}/delete/{id}', [MainContentController::class, 'destroy'])->middleware('auth')->name('tables.delete');
 
             Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');

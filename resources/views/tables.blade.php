@@ -15,13 +15,15 @@
             </thead>
             <tbody>
                 @foreach ($tables as $key => $table)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>
-                        <a href="{{ route('user.tables.edit', $table) }}">{{ $table }}</a>
-                    </td>
-                </tr>      
-                @endforeach      
+                    @if ($table !== 'migrations' && $table !== 'failed_jobs')
+                        <tr>
+                            <td>{{ $key  - 1 }}</td>
+                            <td>
+                                <a href="{{ route('user.tables.edit', $table) }}">{{ $table }}</a>
+                            </td>
+                        </tr>
+                    @endif
+                @endforeach
             </tbody>
         </table>
     </div>
