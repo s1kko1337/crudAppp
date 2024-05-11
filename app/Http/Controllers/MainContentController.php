@@ -20,9 +20,13 @@ class MainContentController extends Controller
 
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
-            $columns = Schema::getColumnListing($tableName); 
+            $columns = Schema::getColumnListing($tableName);
+            if($tableName=='users'){
+            $editableColumns = ['username', 'email', 'roleId'];
+            }
             $tableData = DB::table($tableName)->get(); 
-            return view('editTable', ['tableName' => $tableName, 'columns' => $columns, 'tableData' => $tableData]);
+            $viewName = 'edit' . ucfirst($tableName);
+            return view($viewName, ['tableName' => $tableName, 'columns' => $columns, 'tableData' => $tableData, 'editableColumns' => $editableColumns]);
         } else {
             abort(404);
         }
@@ -37,21 +41,55 @@ class MainContentController extends Controller
     
     //TODO
     public function updateTable(Request $request, $tableName, $id) {
-        // Получаем данные текущей строки по id
-        $currentRow = DB::table($tableName)->where('id', $id)->first();
-    
-        // Перебираем данные из запроса и обновляем только отличающиеся поля
-        $data = $request->except('_token', '_method');
-        $updatedData = array_diff_assoc($data, (array)$currentRow);
-        return redirect()->back()->with('error', $updatedData);
-    
-        if (!empty($updatedData)) {
-            // Обновляем только отличающиеся поля
-            DB::table($tableName)->where('id', $id)->update($updatedData);
-            return redirect()->back()->with('success', 'Данные успешно обновлены');
-        } else {
-            return redirect()->back()->with('info', 'Данные не изменены');
+        if($tableName == 'users') {
+        
+        $validateFields = $request->validate([
+                'username' => 'required|min:8',
+                'email' => 'required|email',
+                'roleId' => 'required'
+            ]);     
+        DB::table('users')
+            ->where('id', $id)
+            ->update([
+            'email' => $validateFields['email'],
+            'username' => $validateFields['username'],
+            'roleId' => $validateFields['roleId']
+        ]); 
+            return redirect()->route('user.tables.edit', $tableName)->with('success', 'Пользователь успешно обновлен');
         }
+        if($tableName == 'premises')
+        {
+            
+        } 
+        if($tableName == 'sellers')
+        {
+            
+        } 
+        if($tableName == 'sales')
+        {
+            
+        } 
+        if($tableName == 'product')
+        {
+            
+        } 
+        if($tableName == 'suppliers')
+        {
+            
+        } 
+        if($tableName == 'supplies')
+        {
+            
+        } 
+        if($tableName == 'roles')
+        {
+            
+        } 
+        if($tableName == 'supply_detail')
+        {
+            
+        } 
+
     }
     
     
