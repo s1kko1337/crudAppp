@@ -34,7 +34,7 @@
                             </td> 
                         </form>
                         <td>
-                            <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $tableId]) }}" method="POST" style="margin-left: 10px;">
+                            <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="margin-left: 10px;">
                                 @csrf
                                 @method('DELETE') 
                                 <button type="submit" class="btn btn-danger">Удалить</button>
