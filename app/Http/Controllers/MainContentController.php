@@ -132,7 +132,7 @@ class MainContentController extends Controller
             'sellers' => ['id_saler','name_saler', 'telephone_saler', 'total_sells'],
             'suppliers' => ['name_org', 'name_supplier', 'email_supplier', 'telephone_supplier', 'adress_org'],
             'supplies' => ['id_supplier', 'supply_date', 'quantity_products', 'total_price'],
-            'supply_detail' => ['id_product', 'quantity']
+            'supply_detail' => ['id_supply','id_product','quantity']
         ];
     
         if (!array_key_exists($tableName, $editableColumns)) {
