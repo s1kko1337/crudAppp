@@ -105,6 +105,7 @@ class MainContentController extends Controller
         foreach ($editableColumns[$tableName] as $column) {
             $updateData[$column] = $request->input($column);
         }
+        $updateData['updated_at'] = now();
         $tableId = $editableColumns[$tableName][0];
         // Обновляем запись в базе данных
         DB::table($tableName)
@@ -135,7 +136,9 @@ class MainContentController extends Controller
         foreach ($editableColumns[$tableName] as $column) {
             $newData[$column] = $request->input($column);
         }
-    
+        
+        $newData['created_at'] = now();
+        $newData['updated_at'] = now();
         DB::table($tableName)->insert($newData);
     
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Запись успешно добавлена');
