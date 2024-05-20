@@ -21,7 +21,7 @@
                 @foreach ($tableData as $row)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <form action="{{ route('user.tables.update', ['tableName' => $tableName, 'id' => $tableId]) }}" method="POST">
+                        <form action="{{ route('user.tables.update', ['tableName' => $tableName, 'id' => $row->$tableId ]) }}" method="POST">
                             @csrf
                             @method('PUT')
                             @foreach ($editableColumns as $column)
@@ -34,7 +34,7 @@
                             </td> 
                         </form>
                         <td>
-                            <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->id]) }}" method="POST" style="margin-left: 10px;">
+                            <form action="{{ route('user.tables.delete', ['tableName' => $tableName, 'id' => $row->$tableId]) }}" method="POST" style="margin-left: 10px;">
                                 @csrf
                                 @method('DELETE') 
                                 <button type="submit" class="btn btn-danger">Удалить</button>
@@ -47,7 +47,6 @@
                     <td>#</td>
                     <form action="{{ route('user.tables.add', ['tableName' => $tableName]) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="_method" value="POST">
                         @foreach ($editableColumns as $column)
                             <td>
                                 <input type="text" class="form-control" name="{{ $column }}" placeholder="{{ $column }}" required>

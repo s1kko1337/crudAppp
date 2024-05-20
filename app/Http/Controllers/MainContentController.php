@@ -32,17 +32,38 @@ class MainContentController extends Controller
                 'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
                 'supply_detail' => ['id_supply','id_product','quantity']
             ];
-            //if($tableName=='users'){
-            //$editableColumns = ['username', 'email', 'roleId'];
-            //}
-            $tableData = DB::table($tableName)->get(); 
-            $tableId = $editableColumns[$tableName][0];
-            //$viewName = 'edit' . ucfirst($tableName);
-            return view('editTable'/*$viewName*/, ['tableName' => $tableName, 'columns' => $columns, 'tableData' => $tableData, 'tableId' =>$tableId, 'editableColumns' => $editableColumns[$tableName]]);
+    
+            $tableId = $this->getTableIdColumn($tableName);
+            $tableData = DB::table($tableName)->orderBy($tableId)->get();
+    
+            return view('editTable', [
+                'tableName' => $tableName,
+                'columns' => $columns,
+                'tableData' => $tableData,
+                'tableId' => $tableId,
+                'editableColumns' => $editableColumns[$tableName]
+            ]);
         } else {
             abort(404);
         }
     }
+    
+    private function getTableIdColumn($tableName) {
+        $editableColumns = [
+            'users' => 'id',
+            'roles' => 'id',
+            'premises' => 'id_room',
+            'product' => 'id_product',
+            'sales' => 'id_sale',
+            'sellers' => 'id_saler',
+            'suppliers' => 'id_supplier',
+            'supplies' => 'id_supply',
+            'supply_detail' => 'id_supply'
+        ];
+    
+        return $editableColumns[$tableName];
+    }
+    
     
     public function destroy($tableName, $id)
     {
@@ -65,15 +86,15 @@ class MainContentController extends Controller
     //TODO
     public function updateTable(Request $request, $tableName, $id) {
         $editableColumns = [
-            'users' => ['email', 'username', 'roleId'],
+            'users' => ['id','username','email', 'roleId'],
             'roles' => ['id','name'],
-            'premises' => ['id_room', 'level_room', 'name_room', 'adress_room', 'capacity_room'],
-            'product' => ['name_product', 'price_product'],
-            'sales' => ['id_saler', 'id_product', 'sale_date', 'quantity', 'total_price'],
-            'sellers' => ['name_saler', 'telephone_saler', 'total_sells'],
-            'suppliers' => ['name_org', 'name_supplier', 'email_supplier', 'telephone_supplier', 'adress_org'],
-            'supplies' => ['id_supplier', 'supply_date', 'quantity_products', 'total_price'],
-            'supply_detail' => ['id_product', 'quantity']
+            'premises' => ['id_room','level_room','name_room','adress_room','capacity_room'],
+            'product' => ['id_product','name_product','price_product'],
+            'sales' => ['id_sale', 'id_saler','id_product','sale_date','quantity','total_price'],
+            'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
+            'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
+            'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
+            'supply_detail' => ['id_supply','id_product','quantity']
         ];
 
         if (!array_key_exists($tableName, $editableColumns)) {
@@ -84,10 +105,10 @@ class MainContentController extends Controller
         foreach ($editableColumns[$tableName] as $column) {
             $updateData[$column] = $request->input($column);
         }
-    
+        $tableId = $editableColumns[$tableName][0];
         // Обновляем запись в базе данных
         DB::table($tableName)
-            ->where('id', $id)
+            ->where($tableId, $id)
             ->update($updateData);
     
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Данные успешно обновлены');
