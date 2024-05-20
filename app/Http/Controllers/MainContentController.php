@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class MainContentController extends Controller
 {
    public function showTables(){
+    $user = Auth::user();
+    $roleId = $user->roleId;
+    if($roleId == 0 || $roleId == 1)
+        {
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
         return view('tables', ['tables' => $tables]);
+        }
+        return redirect(route('user.home'));
     }
     
     public function showHome(){
@@ -120,7 +127,7 @@ class MainContentController extends Controller
             'users' => ['email','username','password', 'roleId'],
             'roles' => ['id','name'],   
             'premises' => ['id_room', 'level_room', 'name_room', 'adress_room', 'capacity_room'],
-            'product' => ['name_product', 'price_product'],
+            'product' => ['id_product','name_product', 'price_product'],
             'sales' => ['id_saler', 'id_product', 'sale_date', 'quantity', 'total_price'],
             'sellers' => ['id_saler','name_saler', 'telephone_saler', 'total_sells'],
             'suppliers' => ['name_org', 'name_supplier', 'email_supplier', 'telephone_supplier', 'adress_org'],

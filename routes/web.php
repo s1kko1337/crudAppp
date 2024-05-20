@@ -35,7 +35,6 @@
             });
             
 
-
             Route::get('/', function(){
                 if(Auth::check()){
                     return redirect(route('user.home'));
