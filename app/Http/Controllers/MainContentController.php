@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rules\Exists;
 
 class MainContentController extends Controller
 {
@@ -22,9 +23,21 @@ class MainContentController extends Controller
     }
     
     public function showHome(){
-        return view('home');
+        $tableName = 'sellers';
+        $sellersCol = ['id_saler','name_saler','telephone_saler','total_sells'];
+        $tableData = DB::table($tableName)->orderBy($sellersCol[0])->get();
+    
+        // Формирование данных для графика
+        $labels = $tableData->pluck('name_saler')->toArray();
+        $data = $tableData->pluck('total_sells')->toArray();
+    
+        return view('home', [
+            'sellers' => $tableData,
+            'chartLabels' => $labels,
+            'chartData' => $data
+        ]);
     }
-
+    
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
