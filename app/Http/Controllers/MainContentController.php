@@ -14,11 +14,10 @@ class MainContentController extends Controller
    public function showTables(){
     $user = Auth::user();
     $roleId = $user->roleId;
-    if($roleId == 0 || $roleId == 1)
-        {
+    if($roleId == 0 || $roleId == 1){
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
         return view('tables', ['tables' => $tables]);
-        }
+    }
         return redirect(route('user.home'));
     }
     
@@ -164,4 +163,21 @@ class MainContentController extends Controller
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Запись успешно добавлена');
     }
      
+
+    public function showSales(){
+        if(Auth::user()->roleId == 2){
+            $editableColumns = [
+                'premises' => ['id_room','level_room','name_room','adress_room','capacity_room'],
+                'product' => ['id_product','name_product','price_product'],
+                'sales' => ['id_sale', 'id_saler','id_product','sale_date','quantity','total_price'],
+                'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
+                'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
+                'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
+                'supply_detail' => ['id_supply','id_product','quantity']
+            ];
+            $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
+            return view('sales');
+        }
+            return redirect(route('user.home'));
+    }
 }

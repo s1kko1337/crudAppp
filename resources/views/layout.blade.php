@@ -38,13 +38,23 @@
                         Главная
                     </a>
                 </li>
+                @if (Auth::user()->roleId == 0 || Auth::user()->roleId == 1)
                 <li>
                     <a href="{{ route('user.tables') }}" class="nav-link {{ request()->routeIs('tables') ? 'active' : '' }}"">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                         Таблицы
                     </a>
                 </li>
+                @endif
+                @if (Auth::user()->roleId == 2)
+            <li class="nav-item">
+                    <a href="{{ route('user.sales') }}" class="nav-link {{ request()->routeIs('sales') ? 'active' : '' }}" aria-current="page">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                        Продажи
+                    </a>
+                </li>
             </ul>
+            @endif
         </div>
         
         <main class="col-md-9 col-lg-10 vh-100" style="overflow-y: auto;">
