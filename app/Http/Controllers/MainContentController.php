@@ -20,23 +20,101 @@ class MainContentController extends Controller
     }
         return redirect(route('user.home'));
     }
+    public function showHome(Request $request){
+        $sellers = DB::table('sellers')->orderBy('id_saler')->get();
+        $sellerIds = $request->query('seller_ids', []);
+        $salesData = [];
+        $chartLabels = [];
+        $chartData = []; 
+        $pieLabels = [];
+        $pieValues = [];
+        $lineChartDatasets = [];
+        $productColors = []; // Инициализируем массив цветов для товаров
     
-    public function showHome(){
-        $tableName = 'sellers';
-        $sellersCol = ['id_saler','name_saler','telephone_saler','total_sells'];
-        $tableData = DB::table($tableName)->orderBy($sellersCol[0])->get();
+        if (!empty($sellerIds)) {
+            $salesData = DB::table('sales')
+                ->whereIn('id_saler', $sellerIds)
+                ->join('product', 'sales.id_product', '=', 'product.id_product')
+                ->select('sales.*', 'product.name_product')
+                ->get();
+            
+            $chartLabels = $salesData->pluck('sale_date')->unique()->toArray();
     
-        // Формирование данных для графика
-        $labels = $tableData->pluck('name_saler')->toArray();
-        $data = $tableData->pluck('total_sells')->toArray();
+            // Суммарная цена продаж по дням для lineChart1
+            $chartData = $salesData->groupBy('sale_date')->map(function($sales) {
+                return $sales->sum('total_price');
+            })->values()->toArray();
+    
+            if (count($sellerIds) == 1) {
+                // Если выбран один продавец, показываем его данные для pieChart
+                $sellerId = $sellerIds[0];
+    
+                $pieLabels = $salesData->pluck('name_product')->unique()->toArray();
+                $pieValues = $salesData->where('id_saler', $sellerId)->groupBy('name_product')->map(function($sales) {
+                    return $sales->sum('total_price');
+                })->values()->toArray();
+    
+                $lineChartDatasets = [
+                    [
+                        'label' => $sellers->where('id_saler', $sellerId)->first()->name_saler,
+                        'data' => $salesData->where('id_saler', $sellerId)->groupBy('sale_date')->map(function($sales) {
+                            return $sales->sum('total_price');
+                        })->values()->toArray(),
+                        'fill' => false,
+                        'borderColor' => 'rgb(75, 192, 192)',
+                        'tension' => 0.1
+                    ]
+                ];
+            } else {
+                // Если выбрано несколько продавцов, показываем сводные данные для pieChart и lineChart2
+                $pieLabels = $salesData->pluck('name_product')->unique()->toArray();
+                $pieValues = $salesData->groupBy('name_product')->map(function($sales) {
+                    return $sales->sum('total_price');
+                })->values()->toArray();
+    
+                // Определим массив цветов для продуктов
+                $colors = [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)',
+                    'rgb(255, 159, 64)',
+                    'rgb(199, 199, 199)',
+                    'rgb(83, 102, 255)'
+                ];
+    
+                // Генерируем массив цветов для продуктов
+                foreach ($pieLabels as $index => $product) {
+                    $productColors[$product] = $colors[$index % count($colors)];
+                }
+    
+                $lineChartDatasets = $salesData->groupBy('id_saler')->map(function($sales, $sellerId) use ($sellers, $productColors) {
+                    $seller = $sellers->where('id_saler', $sellerId)->first();
+                    return [
+                        'label' => $seller->name_saler,
+                        'data' => $sales->groupBy('sale_date')->map(function($sales) {
+                            return $sales->sum('total_price');
+                        })->values()->toArray(),
+                        'fill' => false,
+                        'borderColor' => $productColors[$sales->first()->name_product] ?? 'rgb(0, 0, 0)',
+                        'tension' => 0.1
+                    ];
+                })->values()->toArray();
+            }
+        }
     
         return view('home', [
-            'sellers' => $tableData,
-            'chartLabels' => $labels,
-            'chartData' => $data
+            'sellers' => $sellers,
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
+            'pieLabels' => $pieLabels,
+            'pieValues' => $pieValues,
+            'lineChartDatasets' => $lineChartDatasets,
+            'productColors' => $productColors // Передаем массив цветов в представление
         ]);
     }
-    
+        
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
@@ -155,11 +233,11 @@ class MainContentController extends Controller
         foreach ($editableColumns[$tableName] as $column) {
             $newData[$column] = $request->input($column);
         }
-        
+        if ($tableName != 'roles'){
         $newData['created_at'] = now();
         $newData['updated_at'] = now();
+    }
         DB::table($tableName)->insert($newData);
-    
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Запись успешно добавлена');
     }
      

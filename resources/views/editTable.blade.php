@@ -6,8 +6,8 @@
         <h1 class="h2">Редактирование  {{ $tableName }}</h1>
     </div>
 
-    <div class="table-responsive">
-        <table class="table">
+    <div class="table-responsive small">
+        <table class="table table-sm">
             <thead>
                 <tr>
                     <th>#</th>

@@ -28,6 +28,7 @@
             Route::get('/user/add', [ProfileController::class, 'add'])->name('add');
             Route::post('/user/add', [ ProfileController::class, 'saveUser'])->name('saveUser');
             Route::get('/sales', [ MainContentController::class, 'showSales'])->middleware('auth')->name('sales');           
+            Route::get('/seller/stats', [MainContentController::class, 'showHome'])->name('seller.stats');
             
             Route::middleware('auth')->group(function () {
                 Route::get('/user/edit/{id}', [ProfileController::class, 'edit'])->name('edit');
