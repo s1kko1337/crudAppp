@@ -62,7 +62,7 @@ class MainContentController extends Controller
                         })->values()->toArray(),
                         'fill' => false,
                         'borderColor' => 'rgb(75, 192, 192)',
-                        'tension' => 0.1
+                        'tension' => 0.4
                     ]
                 ];
             } else {
@@ -98,7 +98,7 @@ class MainContentController extends Controller
                         })->values()->toArray(),
                         'fill' => false,
                         'borderColor' => $productColors[$sales->first()->name_product] ?? 'rgb(0, 0, 0)',
-                        'tension' => 0.1
+                        'tension' => 0.4
                     ];
                 })->values()->toArray();
             }
