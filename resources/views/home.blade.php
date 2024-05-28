@@ -32,7 +32,7 @@
         <div class="col-md-12 mt-4">
             <canvas id="lineChart2" class="chart-canvas" width="400" height="400"></canvas>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 pt-4">
             <div class="table-responsive small">
                 <table class="table table-striped table-sm">
                     <thead>
@@ -57,7 +57,7 @@
             </div>
         </div>
     </div>
-@else
+@elseif(count($chartData) > 1)
     <div class="row">
         <div class="col-md-6">
             <canvas id="lineChart1" class="chart-canvas" width="400" height="400"></canvas>
@@ -68,7 +68,7 @@
         <div class="col-md-6">
             <canvas id="lineChart2" class="chart-canvas" width="400" height="400"></canvas>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 pt-4">
             <div class="table-responsive small">
                 <table class="table table-striped table-sm">
                     <thead>

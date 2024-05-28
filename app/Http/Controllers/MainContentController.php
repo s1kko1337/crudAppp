@@ -20,7 +20,7 @@ class MainContentController extends Controller
     }
         return redirect(route('user.home'));
     }
-    public function showHome(Request $request){
+    public function showHome(Request $request) {
         $sellers = DB::table('sellers')->orderBy('id_saler')->get();
         $sellerIds = $request->query('seller_ids', []);
         $salesData = [];
@@ -45,6 +45,18 @@ class MainContentController extends Controller
                 return $sales->sum('total_price');
             })->values()->toArray();
     
+            // Определим массив цветов для продуктов
+            $colors = [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(153, 102, 255)',
+                'rgb(255, 159, 64)',
+                'rgb(199, 199, 199)',
+                'rgb(83, 102, 255)'
+            ];
+    
             if (count($sellerIds) == 1) {
                 // Если выбран один продавец, показываем его данные для pieChart
                 $sellerId = $sellerIds[0];
@@ -53,6 +65,11 @@ class MainContentController extends Controller
                 $pieValues = $salesData->where('id_saler', $sellerId)->groupBy('name_product')->map(function($sales) {
                     return $sales->sum('total_price');
                 })->values()->toArray();
+    
+                // Генерируем массив цветов для продуктов
+                foreach ($pieLabels as $index => $product) {
+                    $productColors[$product] = $colors[$index % count($colors)];
+                }
     
                 $lineChartDatasets = [
                     [
@@ -71,18 +88,6 @@ class MainContentController extends Controller
                 $pieValues = $salesData->groupBy('name_product')->map(function($sales) {
                     return $sales->sum('total_price');
                 })->values()->toArray();
-    
-                // Определим массив цветов для продуктов
-                $colors = [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(153, 102, 255)',
-                    'rgb(255, 159, 64)',
-                    'rgb(199, 199, 199)',
-                    'rgb(83, 102, 255)'
-                ];
     
                 // Генерируем массив цветов для продуктов
                 foreach ($pieLabels as $index => $product) {
@@ -114,6 +119,7 @@ class MainContentController extends Controller
             'productColors' => $productColors // Передаем массив цветов в представление
         ]);
     }
+
         
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
