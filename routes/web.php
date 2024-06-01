@@ -19,8 +19,11 @@
             Route::delete('/tables/{tableName}/delete/{id}', [MainContentController::class, 'destroy'])->middleware('auth')->name('tables.delete');
 
             Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');
-            Route::get('/supplies', [ MainContentController::class, 'showSupplies'])->middleware('auth')->name('supplies');
             Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');
+
+            Route::get('/supplies', [MainContentController::class, 'showSupplies'])->middleware('auth')->name('supplies');
+            Route::post('/supplies', [MainContentController::class, 'storeSupply'])->middleware('auth')->name('store.supply');
+
 
             Route::post('/profile/edit-name', [ProfileController::class, 'editName'])->middleware('auth')->name('profile.editName');
             Route::post('/profile/edit-email', [ ProfileController::class, 'editEmail'])->middleware('auth')->name('profile.editEmail');

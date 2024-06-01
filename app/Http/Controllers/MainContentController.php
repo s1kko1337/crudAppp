@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -350,14 +351,61 @@ class MainContentController extends Controller
     return redirect()->route('user.sales')->with('success', 'Товары успешно проданы');
 }
 
-public function showSupplies(){
+public function showSupplies() {
     $user = Auth::user();
     $roleId = $user->roleId;
-    if($roleId == 0 || $roleId == 1){
-        $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
-        return view('supplies', ['tables' => $tables]);
+    if ($roleId == 0 || $roleId == 1) {
+        $suppliers = DB::table('suppliers')->get();
+        $products = DB::table('product')->get();
+        return view('supplies', ['suppliers' => $suppliers, 'products' => $products]);
     }
-        return redirect(route('user.home'));
+    return redirect(route('user.home'));
+}
+
+public function storeSupply(Request $request) {
+    $validated = $request->validate([
+        'supplier_id' => 'required|exists:suppliers,id_supplier',
+        'supply_date' => 'required|date',
+        'products' => 'required|array',
+        'products.*.product_id' => 'required|exists:product,id_product',
+        'products.*.quantity' => 'required|integer|min:1'
+    ]);
+
+    $supplierId = $validated['supplier_id'];
+    $supplyDate = $validated['supply_date'];
+    $products = $validated['products'];
+
+    $totalPrice = 0;
+
+    foreach ($products as $product) {
+        $productData = DB::table('product')->where('id_product', $product['product_id'])->first();
+        $totalPrice += $productData->price_product * $product['quantity'];
     }
+
+    $totalPrice *= 0.87;
+
+    $supplyId = DB::table('supplies')->insertGetId([
+        'id_supplier' => $supplierId,
+        'supply_date' => $supplyDate,
+        'quantity_products' => array_sum(array_column($products, 'quantity')),
+        'total_price' => $totalPrice,
+        'created_at' => now(),
+        'updated_at' => now()
+    ], 'id_supply');
+
+    foreach ($products as $product) {
+        DB::table('supply_detail')->insert([
+            'id_supply' => $supplyId,
+            'id_product' => $product['product_id'],
+            'quantity' => $product['quantity'],
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    }
+
+    Artisan::call('transfer:supplies');
+    return redirect()->route('user.supplies')->with('success', 'Поставка успешно добавлена');
+}
+
 
 }
