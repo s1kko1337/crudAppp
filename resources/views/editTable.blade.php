@@ -42,7 +42,7 @@
                         </td>
                     </tr>
                 @endforeach
-                @if ($tableName !== 'users')
+                @if ($tableName !== 'users' && $tableName !== 'sales' && $tableName !== 'sale_details')
                 <tr>
                     <td>#</td>
                     <form action="{{ route('user.tables.add', ['tableName' => $tableName]) }}" method="POST">
