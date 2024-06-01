@@ -227,7 +227,10 @@ class MainContentController extends Controller
         foreach ($editableColumns[$tableName] as $column) {
             $updateData[$column] = $request->input($column);
         }
-        $updateData['updated_at'] = now();
+        if($tableName != 'roles')
+        {
+            $updateData['updated_at'] = now();
+        }
         $tableId = $editableColumns[$tableName][0];
         DB::table($tableName)
             ->where($tableId, $id)
@@ -346,5 +349,15 @@ class MainContentController extends Controller
 
     return redirect()->route('user.sales')->with('success', 'Товары успешно проданы');
 }
+
+public function showSupplies(){
+    $user = Auth::user();
+    $roleId = $user->roleId;
+    if($roleId == 0 || $roleId == 1){
+        $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
+        return view('supplies', ['tables' => $tables]);
+    }
+        return redirect(route('user.home'));
+    }
 
 }

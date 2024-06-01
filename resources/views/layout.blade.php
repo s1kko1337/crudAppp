@@ -45,6 +45,13 @@
                         Таблицы
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('user.supplies') }}" class="nav-link {{ request()->routeIs('supplies') ? 'active' : '' }}" aria-current="page">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                        Поставки
+                    </a>
+                </li>
                 @endif
                 @if (Auth::user()->roleId == 2)
             <li class="nav-item">
