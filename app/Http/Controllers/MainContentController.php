@@ -422,5 +422,4 @@ public function storeSupply(Request $request) {
 
     return redirect()->route('user.supplies')->with('success', 'Поставка успешно добавлена и товары перемещены на склад.');
 }
-
 }
