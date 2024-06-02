@@ -147,7 +147,8 @@ class MainContentController extends Controller
                 'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
                 'supply_detail' => ['id_supply','id_product','quantity'],
                 'sellers_registered' => ['id','id_saler'],
-                'storage' => ['id_product','quantity_products']
+                'storage' => ['id_product','quantity_products'],
+                'supplies_status' =>['id_supply','is_added']
             ];
     
             $tableId = $this->getTableIdColumn($tableName);
@@ -177,7 +178,8 @@ class MainContentController extends Controller
             'supplies' => 'id_supply',
             'supply_detail' => 'id_supply',
             'sellers_registered' => 'id',
-            'storage' => 'id_product'
+            'storage' => 'id_product',
+            'supplies_status' =>'id_supply'
         ];
     
         return $editableColumns[$tableName];
@@ -197,7 +199,8 @@ class MainContentController extends Controller
             'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
             'supply_detail' => ['id_supply','id_product','quantity'],
             'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products']
+            'storage' => ['id_product','quantity_products'],
+            'supplies_status' =>['id_supply','is_added']
         ];
         $tableId = $editableColumns[$tableName][0];
         DB::table($tableName)->where($tableId, $id)->delete();
@@ -217,7 +220,8 @@ class MainContentController extends Controller
             'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
             'supply_detail' => ['id_supply','id_product','quantity'],
             'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products']
+            'storage' => ['id_product','quantity_products'],
+            'supplies_status' =>['id_supply','is_added']
         ];
 
         if (!array_key_exists($tableName, $editableColumns)) {
@@ -252,7 +256,8 @@ class MainContentController extends Controller
             'supplies' => ['id_supplier', 'supply_date', 'quantity_products', 'total_price'],
             'supply_detail' => ['id_supply','id_product','quantity'],
             'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products']
+            'storage' => ['id_product','quantity_products'],
+            'supplies_status' =>[]
         ];
     
         if (!array_key_exists($tableName, $editableColumns)) {
@@ -383,6 +388,7 @@ public function storeSupply(Request $request) {
     }
 
     $totalPrice *= 0.87;
+    $totalPrice = round($totalPrice);
 
     $supplyId = DB::table('supplies')->insertGetId([
         'id_supplier' => $supplierId,
@@ -403,9 +409,18 @@ public function storeSupply(Request $request) {
         ]);
     }
 
-    Artisan::call('transfer:supplies');
-    return redirect()->route('user.supplies')->with('success', 'Поставка успешно добавлена');
-}
+    // Добавляем запись в таблицу supplies_status
+    DB::table('supplies_status')->insert([
+        'id_supply' => $supplyId,
+        'is_added' => false,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
 
+    // Вызов команды после добавления поставки
+    Artisan::call('transfer:supplies');
+
+    return redirect()->route('user.supplies')->with('success', 'Поставка успешно добавлена и товары перемещены на склад.');
+}
 
 }

@@ -17,7 +17,11 @@ class TransferSuppliesToStorage extends Command
 
     public function handle()
     {
-        $supplies = DB::table('supply_detail')->get();
+        $supplies = DB::table('supply_detail')
+            ->join('supplies_status', 'supply_detail.id_supply', '=', 'supplies_status.id_supply')
+            ->where('supplies_status.is_added', false)
+            ->select('supply_detail.*')
+            ->get();
 
         foreach ($supplies as $supply) {
             $existingProduct = DB::table('storage')->where('id_product', $supply->id_product)->first();
@@ -35,6 +39,10 @@ class TransferSuppliesToStorage extends Command
                 ]);
             }
         }
+
+        DB::table('supplies_status')
+            ->whereIn('id_supply', $supplies->pluck('id_supply'))
+            ->update(['is_added' => true]);
 
         $this->info('Supplies have been transferred to storage successfully.');
     }
