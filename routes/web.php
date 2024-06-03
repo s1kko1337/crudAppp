@@ -5,6 +5,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MainContentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AdminTablesController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -12,11 +13,12 @@ Route::name('user.')->group(function(){
     Route::get('/tables', [ MainContentController::class, 'showTables'])->middleware('auth')->name('tables');
     Route::get('/tables/{tableName}/edit', [MainContentController::class, 'editTable'])->middleware('auth')->name('tables.edit');
     Route::put('/tables/{tableName}/update/{id}', [MainContentController::class, 'updateTable'])->middleware('auth')->name('tables.update');
-
     Route::get('/tables/{tableName}/edit/add', [MainContentController::class, 'addTable'])->middleware('auth')->name('tables.add');
     Route::post('/tables/{tableName}/edit/add', [MainContentController::class, 'addTable'])->middleware('auth')->name('tables.add');
-
     Route::delete('/tables/{tableName}/delete/{id}', [MainContentController::class, 'destroy'])->middleware('auth')->name('tables.delete');
+
+    Route::get('/sales/{id_sale}/details', [MainContentController::class, 'getSaleDetails'])->middleware('auth')->name('sales.details');
+    Route::get('/supplies/{id_supply}/details', [MainContentController::class, 'getSupplyDetails'])->middleware('auth')->name('supplies.details');
 
     Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');
     Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');
@@ -24,6 +26,13 @@ Route::name('user.')->group(function(){
     Route::get('/supplies', [MainContentController::class, 'showSupplies'])->middleware('auth')->name('supplies');
     Route::post('/supplies', [MainContentController::class, 'storeSupply'])->middleware('auth')->name('store.supply');
 
+
+    Route::get('/admintables', [ AdminTablesController::class, 'showTables'])->middleware('auth')->name('admintables');
+    Route::get('/admintables/{tableName}/edit', [AdminTablesController::class, 'editTable'])->middleware('auth')->name('admintables.edit');
+    Route::put('/admintables/{tableName}/update/{id}', [AdminTablesController::class, 'updateTable'])->middleware('auth')->name('admintables.update');
+    Route::get('/admintables/{tableName}/edit/add', [AdminTablesController::class, 'addTable'])->middleware('auth')->name('admintables.add');
+    Route::post('/admintables/{tableName}/edit/add', [AdminTablesController::class, 'addTable'])->middleware('auth')->name('admintables.add');
+    Route::delete('/admintables/{tableName}/delete/{id}', [AdminTablesController::class, 'destroy'])->middleware('auth')->name('admintables.delete');
 
     Route::post('/profile/edit-name', [ProfileController::class, 'editName'])->middleware('auth')->name('profile.editName');
     Route::post('/profile/edit-email', [ ProfileController::class, 'editEmail'])->middleware('auth')->name('profile.editEmail');

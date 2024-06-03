@@ -38,7 +38,7 @@
                         Главная
                     </a>
                 </li>
-                @if (Auth::user()->roleId == 0 || Auth::user()->roleId == 1)
+                @if (Auth::user()->roleId == 1)
                 <li>
                     <a href="{{ route('user.tables') }}" class="nav-link {{ request()->routeIs('tables') ? 'active' : '' }}"">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
@@ -51,6 +51,14 @@
                     <a href="{{ route('user.supplies') }}" class="nav-link {{ request()->routeIs('supplies') ? 'active' : '' }}" aria-current="page">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
                         Поставки
+                    </a>
+                </li>
+                @endif
+                @if (Auth::user()->roleId == 0)
+                <li>
+                    <a href="{{ route('user.admintables') }}" class="nav-link {{ request()->routeIs('tables') ? 'active' : '' }}"">
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                        Администрирование таблиц
                     </a>
                 </li>
                 @endif

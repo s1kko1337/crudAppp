@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Редактирование таблиц</h1>
+        <h1 class="h2">Таблицы</h1>
     </div>
 
     <div class="table-responsive">
@@ -17,9 +17,9 @@
                 @foreach ($tables as $key => $table)
                     @if ($table !== 'migrations' && $table !== 'failed_jobs')
                         <tr>
-                            <td>{{ $key + 1}}</td>
+                            <td>{{ $key  - 1 }}</td>
                             <td>
-                                <a href="{{ route('user.tables.edit', $table) }}">{{ $tableNamesTranslated[$table] }}</a>
+                                <a href="{{ route('user.admintables.edit', $table) }}">{{ $table }}</a>
                             </td>
                         </tr>
                     @endif

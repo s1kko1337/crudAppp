@@ -12,21 +12,126 @@ use Illuminate\Support\Facades\Schema;
 
 class MainContentController extends Controller
 {
-   public function showTables(){
-    $user = Auth::user();
-    $roleId = $user->roleId;
-    $tableNames = [
+    protected $editableIds = [
+        'users' => 'id',
+        'roles' => 'id',
+        'product' => 'id_product',
+        'sales' => 'id_sale',
+        'sale_details' => 'id',
+        'sellers' => 'id_saler',
+        'suppliers' => 'id_supplier',
+        'supplies' => 'id_supply',
+        'supply_detail' => 'id_supply',
+        'sellers_registered' => 'id',
+        'storage' => 'id_product',
+        'supplies_status' =>'id_supply'
+    ];
+    protected $editableColumns = [
+        'users' => ['id','username','email', 'roleId'],
+        'roles' => ['id','name'],
+        'product' => ['id_product','name_product','price_product'],
+        'sales' => ['id_sale', 'id_saler'],
+        'sale_details' => ['id','id_sale', 'id_product', 'quantity','total_price'],
+        'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
+        'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
+        'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
+        'supply_detail' => ['id_supply','id_product','quantity'],
+        'sellers_registered' => ['id','id_saler'],
+        'storage' => ['id_product','quantity_products'],
+        'supplies_status' =>['id_supply','is_added']
+    ];
+    protected $tableNames = [
+        'sellers',
+        'product',
+        'users',
+        'suppliers',
+        'supplies',
+        'storage',
+        'sales',
+        'roles'
+    ];
+    protected $tableNamesTranslated = [
         'sellers' => 'Продавцы',
         'product' => 'Товары',
         'users' => 'Пользователи',
         'suppliers' => 'Поставщики',
         'supplies' => 'Поставки',
         'storage' => 'Склад',
-        'sales' => 'Продажи'
+        'sales' => 'Продажи',
+        'roles' => 'Роли'
     ];
+
+    protected $columnNames = [
+        'users' => [
+            'id' => 'ID',
+            'username' => 'Имя пользователя',
+            'email' => 'Электронная почта',
+            'roleId' => 'Роль'
+        ],
+        'roles' => [
+            'id' => 'ID',
+            'name' => 'Название'
+        ],
+        'product' => [
+            'id_product' => 'ID',
+            'name_product' => 'Название товара',
+            'price_product' => 'Цена товара'
+        ],
+        'sales' => [
+            'id_sale' => 'ID',
+            'id_saler' => 'ID продавца'
+        ],
+        'sale_details' => [
+            'id' => 'ID',
+            'id_sale' => 'ID продажи',
+            'id_product' => 'ID товара',
+            'quantity' => 'Количество',
+            'total_price' => 'Общая цена'
+        ],
+        'sellers' => [
+            'id_saler' => 'ID',
+            'name_saler' => 'Имя продавца',
+            'telephone_saler' => 'Телефон продавца',
+            'total_sells' => 'Всего продаж'
+        ],
+        'suppliers' => [
+            'id_supplier' => 'ID',
+            'name_org' => 'Название организации',
+            'name_supplier' => 'Имя поставщика',
+            'email_supplier' => 'Электронная почта',
+            'telephone_supplier' => 'Телефон поставщика',
+            'adress_org' => 'Адрес организации'
+        ],
+        'supplies' => [
+            'id_supply' => 'ID',
+            'id_supplier' => 'ID поставщика',
+            'supply_date' => 'Дата поставки',
+            'quantity_products' => 'Количество товаров',
+            'total_price' => 'Общая цена'
+        ],
+        'supply_detail' => [
+            'id_supply' => 'ID поставки',
+            'id_product' => 'ID товара',
+            'quantity' => 'Количество'
+        ],
+        'sellers_registered' => [
+            'id' => 'ID',
+            'id_saler' => 'ID продавца'
+        ],
+        'storage' => [
+            'id_product' => 'ID товара',
+            'quantity_products' => 'Количество товаров'
+        ],
+        'supplies_status' => [
+            'id_supply' => 'ID поставки',
+            'is_added' => 'Добавлено'
+        ]
+    ];
+    public function showTables(){
+    $user = Auth::user();
+    $roleId = $user->roleId;
     if($roleId == 0 || $roleId == 1){
-        $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
-        return view('tables', ['tables' => $tables, 'tableNames' => $tableNames]);
+        return view('tables', ['tables' => $this->tableNames, 'tableNamesTranslated' => $this->tableNamesTranslated]);
     }
         return redirect(route('user.home'));
     }
@@ -145,21 +250,6 @@ class MainContentController extends Controller
     public function editTable($tableName) {
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
-            $editableColumns = [
-                'users' => ['id','username','email', 'roleId'],
-                'roles' => ['id','name'],
-                'product' => ['id_product','name_product','price_product'],
-                'sales' => ['id_sale', 'id_saler'],
-                'sale_details' => ['id','id_sale', 'id_product', 'quantity','total_price'],
-                'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
-                'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
-                'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
-                'supply_detail' => ['id_supply','id_product','quantity'],
-                'sellers_registered' => ['id','id_saler'],
-                'storage' => ['id_product','quantity_products'],
-                'supplies_status' =>['id_supply','is_added']
-            ];
-    
             $tableId = $this->getTableIdColumn($tableName);
             $tableData = DB::table($tableName)->orderBy($tableId)->get();
     
@@ -168,7 +258,9 @@ class MainContentController extends Controller
                 'columns' => $columns,
                 'tableData' => $tableData,
                 'tableId' => $tableId,
-                'editableColumns' => $editableColumns[$tableName]
+                'editableColumns' => $this->editableColumns[$tableName],
+                'columnNames' => $this->columnNames,
+                'tableNamesTranslated' => $this->tableNamesTranslated
             ]);
         } else {
             abort(404);
@@ -176,76 +268,34 @@ class MainContentController extends Controller
     }
     
     private function getTableIdColumn($tableName) {
-        $editableColumns = [
-            'users' => 'id',
-            'roles' => 'id',
-            'product' => 'id_product',
-            'sales' => 'id_sale',
-            'sale_details' => 'id',
-            'sellers' => 'id_saler',
-            'suppliers' => 'id_supplier',
-            'supplies' => 'id_supply',
-            'supply_detail' => 'id_supply',
-            'sellers_registered' => 'id',
-            'storage' => 'id_product',
-            'supplies_status' =>'id_supply'
-        ];
-    
-        return $editableColumns[$tableName];
+        return $this->editableIds[$tableName];
     }
     
     
     public function destroy($tableName, $id)
     {
-        $editableColumns = [
-            'users' => ['id','username','email', 'roleId'],
-            'roles' => ['id','name'],
-            'product' => ['id_product','name_product','price_product'],
-            'sales' => ['id_sale', 'id_saler'],
-            'sale_details' => ['id','id_sale', 'id_product', 'quantity','total_price'],
-            'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
-            'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
-            'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
-            'supply_detail' => ['id_supply','id_product','quantity'],
-            'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products'],
-            'supplies_status' =>['id_supply','is_added']
-        ];
-        $tableId = $editableColumns[$tableName][0];
+
+        $tableId = $this->editableColumns[$tableName][0];
         DB::table($tableName)->where($tableId, $id)->delete();
         return redirect()->route('user.tables.edit', $tableName)->with('success', 'Строка успешно удалена');
     }
     
     //TODO
     public function updateTable(Request $request, $tableName, $id) {
-        $editableColumns = [
-            'users' => ['id','username','email', 'roleId'],
-            'roles' => ['id','name'],
-            'product' => ['id_product','name_product','price_product'],
-            'sales' => ['id_sale', 'id_saler'],
-            'sale_details' => ['id','id_sale', 'id_product', 'quantity','total_price'],
-            'sellers' => ['id_saler','name_saler','telephone_saler','total_sells'],
-            'suppliers' => ['id_supplier','name_org','name_supplier','email_supplier','telephone_supplier','adress_org'],
-            'supplies' => ['id_supply','id_supplier','supply_date','quantity_products','total_price'],
-            'supply_detail' => ['id_supply','id_product','quantity'],
-            'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products'],
-            'supplies_status' =>['id_supply','is_added']
-        ];
 
-        if (!array_key_exists($tableName, $editableColumns)) {
+        if (!array_key_exists($tableName, $this->editableColumns)) {
             abort(404);
         }
     
         $updateData = [];
-        foreach ($editableColumns[$tableName] as $column) {
+        foreach ($this->editableColumns[$tableName] as $column) {
             $updateData[$column] = $request->input($column);
         }
         if($tableName != 'roles')
         {
             $updateData['updated_at'] = now();
         }
-        $tableId = $editableColumns[$tableName][0];
+        $tableId = $this->editableColumns[$tableName][0];
         DB::table($tableName)
             ->where($tableId, $id)
             ->update($updateData);
@@ -254,27 +304,14 @@ class MainContentController extends Controller
     }
     
     public function addTable(Request $request, $tableName) {
-        $editableColumns = [
-            'users' => ['email','username','password', 'roleId'],
-            'roles' => ['id','name'],   
-            'product' => ['id_product','name_product', 'price_product'],
-            'sales' => [],
-            'sale_details' => [],
-            'sellers' => ['id_saler','name_saler', 'telephone_saler', 'total_sells'],
-            'suppliers' => ['name_org', 'name_supplier', 'email_supplier', 'telephone_supplier', 'adress_org'],
-            'supplies' => ['id_supplier', 'supply_date', 'quantity_products', 'total_price'],
-            'supply_detail' => ['id_supply','id_product','quantity'],
-            'sellers_registered' => ['id','id_saler'],
-            'storage' => ['id_product','quantity_products'],
-            'supplies_status' =>[]
-        ];
+
     
-        if (!array_key_exists($tableName, $editableColumns)) {
+        if (!array_key_exists($tableName, $this->editableColumns)) {
             abort(404);
         }
     
         $newData = [];
-        foreach ($editableColumns[$tableName] as $column) {
+        foreach ($this->editableColumns[$tableName] as $column) {
             $newData[$column] = $request->input($column);
         }
         if ($tableName != 'roles'){
@@ -418,7 +455,6 @@ public function storeSupply(Request $request) {
         ]);
     }
 
-    // Добавляем запись в таблицу supplies_status
     DB::table('supplies_status')->insert([
         'id_supply' => $supplyId,
         'is_added' => false,
@@ -426,9 +462,31 @@ public function storeSupply(Request $request) {
         'updated_at' => now()
     ]);
 
-    // Вызов команды после добавления поставки
     Artisan::call('transfer:supplies');
 
     return redirect()->route('user.supplies')->with('success', 'Поставка успешно добавлена и товары перемещены на склад.');
 }
+
+public function getSaleDetails($id_sale) {
+    $saleDetails = DB::table('sale_details')
+        ->join('product', 'sale_details.id_product', '=', 'product.id_product')
+        ->join('sales', 'sale_details.id_sale', '=', 'sales.id_sale')
+        ->join('sellers', 'sales.id_saler', '=', 'sellers.id_saler')
+        ->where('sale_details.id_sale', $id_sale)
+        ->select('sale_details.id_sale', 'product.name_product', 'sale_details.quantity', 'sales.sale_date', 'sellers.name_saler', 'sale_details.total_price')
+        ->get();
+    return response()->json($saleDetails);
+}
+
+public function getSupplyDetails($id_supply) {
+    $supplyDetails = DB::table('supply_detail')
+        ->join('product', 'supply_detail.id_product', '=', 'product.id_product')
+        ->join('supplies', 'supply_detail.id_supply', '=', 'supplies.id_supply')
+        ->join('suppliers', 'supplies.id_supplier', '=', 'suppliers.id_supplier')
+        ->where('supply_detail.id_supply', $id_supply)
+        ->select('supply_detail.id_supply', 'suppliers.name_supplier', 'supplies.supply_date', 'product.name_product', 'supply_detail.quantity', 'supplies.total_price')
+        ->get();
+    return response()->json($supplyDetails);
+}
+
 }
