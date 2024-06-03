@@ -228,7 +228,7 @@
 
         function formatSalesDetails(data) {
             let html = '<table class="table table-sm table-bordered">';
-            html += '<thead><tr><th>ID продажи</th><th>Название товара</th><th>Количество</th><th>Дата продажи</th><th>Имя продавца</th><th>Общая цена</th></tr></thead><tbody>';
+            html += '<thead><tr><th>ID продажи</th><th>Название товара</th><th>Количество</th><th>Дата продажи</th><th>Имя продавца</th><th>Цена товара</th><th>Общая цена</th></tr></thead><tbody>';
             data.forEach(item => {
                 html += `<tr>
                     <td>${item.id_sale}</td>
@@ -236,6 +236,7 @@
                     <td>${item.quantity}</td>
                     <td>${item.sale_date}</td>
                     <td>${item.name_saler}</td>
+                    <td>${item.price_product}</td>
                     <td>${item.total_price}</td>
                 </tr>`;
             });
@@ -245,7 +246,7 @@
 
         function formatSuppliesDetails(data) {
             let html = '<table class="table table-sm table-bordered">';
-            html += '<thead><tr><th>ID поставки</th><th>Имя поставщика</th><th>Дата поставки</th><th>Название товара</th><th>Количество товара</th><th>Общая цена</th></tr></thead><tbody>';
+            html += '<thead><tr><th>ID поставки</th><th>Имя поставщика</th><th>Дата поставки</th><th>Название товара</th><th>Количество товара</th><th>Цена товара</th><th>Общая цена</th></tr></thead><tbody>';
             data.forEach(item => {
                 html += `<tr>
                     <td>${item.id_supply}</td>
@@ -253,6 +254,7 @@
                     <td>${item.supply_date}</td>
                     <td>${item.name_product}</td>
                     <td>${item.quantity}</td>
+                    <td>${item.price_product}</td>
                     <td>${item.total_price}</td>
                 </tr>`;
             });

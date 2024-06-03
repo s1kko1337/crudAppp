@@ -107,7 +107,7 @@ class MainContentController extends Controller
             'id_supplier' => 'ID поставщика',
             'supply_date' => 'Дата поставки',
             'quantity_products' => 'Количество товаров',
-            'total_price' => 'Общая цена'
+            'total_price' => 'Общая цена (скидка 13%)'
         ],
         'supply_detail' => [
             'id_supply' => 'ID поставки',
@@ -473,7 +473,7 @@ public function getSaleDetails($id_sale) {
         ->join('sales', 'sale_details.id_sale', '=', 'sales.id_sale')
         ->join('sellers', 'sales.id_saler', '=', 'sellers.id_saler')
         ->where('sale_details.id_sale', $id_sale)
-        ->select('sale_details.id_sale', 'product.name_product', 'sale_details.quantity', 'sales.sale_date', 'sellers.name_saler', 'sale_details.total_price')
+        ->select('sale_details.id_sale', 'product.name_product', 'sale_details.quantity', 'sales.sale_date', 'sellers.name_saler', 'product.price_product', DB::raw('sale_details.quantity * product.price_product as total_price'))
         ->get();
     return response()->json($saleDetails);
 }
@@ -484,7 +484,7 @@ public function getSupplyDetails($id_supply) {
         ->join('supplies', 'supply_detail.id_supply', '=', 'supplies.id_supply')
         ->join('suppliers', 'supplies.id_supplier', '=', 'suppliers.id_supplier')
         ->where('supply_detail.id_supply', $id_supply)
-        ->select('supply_detail.id_supply', 'suppliers.name_supplier', 'supplies.supply_date', 'product.name_product', 'supply_detail.quantity', 'supplies.total_price')
+        ->select('supply_detail.id_supply', 'suppliers.name_supplier', 'supplies.supply_date', 'product.name_product', 'supply_detail.quantity', 'product.price_product', DB::raw('supply_detail.quantity * product.price_product as total_price'))
         ->get();
     return response()->json($supplyDetails);
 }
