@@ -46,7 +46,7 @@
 
 </form>
   <a class="btn btn-primary w-100 py-2 my-1" type="button" href="{{ ('registration') }}" >Зарегестрироваться</a>
-  <p class="mt-3 mb-3 text-body-secondary">© Гигакурсач 2024</p>
+  <p class="mt-3 mb-3 text-body-secondary">© Курсовая работа базы данных 2024</p>
 </main>
 </body>
 </html>

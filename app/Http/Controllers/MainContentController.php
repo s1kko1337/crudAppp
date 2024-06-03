@@ -15,9 +15,18 @@ class MainContentController extends Controller
    public function showTables(){
     $user = Auth::user();
     $roleId = $user->roleId;
+    $tableNames = [
+        'sellers' => 'Продавцы',
+        'product' => 'Товары',
+        'users' => 'Пользователи',
+        'suppliers' => 'Поставщики',
+        'supplies' => 'Поставки',
+        'storage' => 'Склад',
+        'sales' => 'Продажи'
+    ];
     if($roleId == 0 || $roleId == 1){
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
-        return view('tables', ['tables' => $tables]);
+        return view('tables', ['tables' => $tables, 'tableNames' => $tableNames]);
     }
         return redirect(route('user.home'));
     }
