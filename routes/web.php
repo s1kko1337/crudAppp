@@ -19,6 +19,7 @@ Route::name('user.')->group(function(){
 
     Route::get('/sales/{id_sale}/details', [MainContentController::class, 'getSaleDetails'])->middleware('auth')->name('sales.details');
     Route::get('/supplies/{id_supply}/details', [MainContentController::class, 'getSupplyDetails'])->middleware('auth')->name('supplies.details');
+    Route::get('/product/{id_product}/details', [MainContentController::class, 'getProductDetails'])->middleware('auth')->name('product.details');
 
     Route::get('/home', [ MainContentController::class, 'showHome'])->middleware('auth')->name('home');
     Route::get('/profile', [ ProfileController::class, 'show'])->middleware('auth')->name('profile');

@@ -489,4 +489,12 @@ public function getSupplyDetails($id_supply) {
     return response()->json($supplyDetails);
 }
 
+public function getProductDetails($id_product) {
+    $productDetails = DB::table('product')
+        ->where('id_product', $id_product)
+        ->select('id_product', 'name_product', 'price_product')
+        ->first();
+    return response()->json($productDetails);
+}
+
 }
